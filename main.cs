@@ -30,7 +30,7 @@ namespace SDLBase
             Texture grassNormal = new Texture(OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat, OpenTK.Graphics.OpenGL.TextureMinFilter.Linear, true);
             grassNormal.Load("Textures/grass_normal.png");
 
-            Material material = new Material(Shader.Find("Shaders/phong_pp"));
+            Material material = new Material(Shader.Find("Shaders/phong_pp_sss"));
             material.Set("Color", Color4.White);
             material.Set("ColorEmissive", Color4.Black);
             material.Set("Specular", new Vector2(2.0f, 128.0f));
@@ -62,7 +62,7 @@ namespace SDLBase
 
             Mesh mesh = GeometryFactory.AddCylinder(widthTrunk, heightTrunk, 8, true);
 
-            Material material = new Material(Shader.Find("Shaders/phong_pp"));
+            Material material = new Material(Shader.Find("Shaders/phong_pp_sss"));
             material.Set("Color", new Color4(rnd.Range(0.6f, 0.9f), rnd.Range(0.4f, 0.6f), rnd.Range(0.15f, 0.35f), 1.0f));
             material.Set("ColorEmissive", Color4.Black);
             material.Set("Specular", Vector2.UnitY);
@@ -77,7 +77,7 @@ namespace SDLBase
             // Leaves
             mesh = GeometryFactory.AddCylinder(rnd.Range(widthTrunk * 1.5f, widthTrunk * 4.0f), rnd.Range(heightTrunk * 2.0f, heightTrunk * 8.0f), 16, true);
 
-            material = new Material(Shader.Find("Shaders/phong_pp"));
+            material = new Material(Shader.Find("Shaders/phong_pp_sss"));
             material.Set("Color", new Color4(rnd.Range(0.0f, 0.2f), rnd.Range(0.6f, 0.8f), rnd.Range(0.0f, 0.2f), 1.0f));
             material.Set("ColorEmissive", Color4.Black);
             material.Set("Specular", Vector2.UnitY);
@@ -114,12 +114,12 @@ namespace SDLBase
             go.transform.position = new Vector3(0.0f, 3.0f, 0.0f);
             go.transform.rotation = Quaternion.FromAxisAngle(Vector3.UnitX, -MathF.PI * 0.16f);
             Light light = go.AddComponent<Light>();
-            light.type = Light.Type.Spot;
+            light.type = Light.Type.Directional;
             light.lightColor = Color.White;
-            light.intensity = 5.0f;
+            light.intensity = 2.0f;
             light.range = 200;
             light.cone = new Vector2(0.0f, MathF.PI / 2.0f);
-            light.SetShadow(true, 2048);
+            //light.SetShadow(true, 2048);
 
             return go;
         }

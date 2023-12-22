@@ -10,7 +10,8 @@ shadowmap technique.
 For each light, a ray is cast (in screen space) from the pixel to be drawn to the light's position.
 At each step, the ray's current depth is compared to the value written on the depth buffer for that
 position in screen space. If the ray's depth is larger (occluded from the camera), that pixel should
-be in shadow.
+be in shadow. The render pipeline must include a pass for generating the depth buffer required by
+the algorithm.
 
 ## References
 

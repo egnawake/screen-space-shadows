@@ -20,6 +20,7 @@ namespace OpenTKBase
         private float           _farPlane = 1000.0f;
         private bool            _dirty = true;
         private Matrix4         _projection;
+        private Texture         _depthTex;
 
         public ClearBufferMask  GetClearFlags() => _clearFlags;
         public Color4           GetClearColor() => _clearColor;
@@ -30,6 +31,7 @@ namespace OpenTKBase
         public float            nearPlane { get => _nearPlane; set { _nearPlane = value; _dirty = true; } }
         public float            farPlane { get => _farPlane; set { _farPlane = value; _dirty = true; } }
         public float            fieldOfView { get => _fieldOfView; set { _fieldOfView = value; _dirty = true; } }
+        public Texture          depthTex => _depthTex;
 
         public Matrix4 projection
         {
@@ -39,6 +41,13 @@ namespace OpenTKBase
 
                 return _projection;
             }
+        }
+
+        public void InitDepthTexture(int sizeX, int sizeY)
+        {
+            _depthTex = new Texture(OpenTK.Graphics.OpenGL.TextureWrapMode.ClampToBorder, OpenTK.Graphics.OpenGL.TextureMinFilter.Nearest, false);
+            _depthTex.CreateDepth(sizeX, sizeY);
+            _depthTex.CreateRendertarget();
         }
 
         private void UpdateInternals()

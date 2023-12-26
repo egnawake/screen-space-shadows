@@ -7,6 +7,7 @@ namespace OpenTKBase
     public class RPS : RenderPipeline
     {
         static private Material shadowmapMaterial;
+        static private Material depthMaterial;
         static private Texture  defaultShadowmap;
 
         private Material GetShadowmapMaterial()
@@ -17,6 +18,16 @@ namespace OpenTKBase
             }
 
             return shadowmapMaterial;
+        }
+
+        private Material GetDepthMaterial()
+        {
+            if (depthMaterial == null)
+            {
+                depthMaterial = new Material(Shader.Find("shaders/std_shadowmap"));
+            }
+
+            return depthMaterial;
         }
 
         private Texture GetDefaultShadowmap()
@@ -37,6 +48,31 @@ namespace OpenTKBase
             var allCameras = scene.FindObjectsOfType<Camera>();
             var allRender = scene.FindObjectsOfType<Renderable>();
             var allLights = scene.FindObjectsOfType<Light>();
+
+            Material depthMaterial = GetDepthMaterial();
+
+            // Render depth textures
+            foreach (var camera in allCameras)
+            {
+                camera.depthTex.Set(-1);
+
+                GL.ClearDepth(camera.GetClearDepth());
+                GL.Clear(camera.GetClearFlags());
+
+                Shader.SetMatrix(Shader.MatrixType.Camera, camera.transform.worldToLocalMatrix);
+                Shader.SetMatrix(Shader.MatrixType.InvCamera, camera.transform.localToWorldMatrix);
+                Shader.SetMatrix(Shader.MatrixType.Projection, camera.projection);
+
+                foreach (var render in allRender)
+                {
+                    render.Render(camera, depthMaterial);
+                }
+
+                camera.depthTex.Unset();
+            }
+
+            Material envMaterial = OpenTKApp.APP.mainScene.environment;
+            envMaterial.Set("TextureDepth", allCameras[0].depthTex.GetDepthTexture());
 
             // Invert cull mode for shadowmap rendering (only works if objects are all "solid")
             GL.Enable(EnableCap.CullFace);
@@ -81,7 +117,6 @@ namespace OpenTKBase
             GL.Enable(EnableCap.CullFace);
             GL.CullFace(CullFaceMode.Back);
 
-            var envMaterial = OpenTKApp.APP.mainScene.environment;
             envMaterial.Set("LightCount", allLights.Count);
             for (int i = 0; i < Math.Min(allLights.Count, 8); i++)
             {

@@ -38,9 +38,11 @@ struct Light
 uniform int     LightCount;
 uniform Light   Lights[MAX_LIGHTS];
 
-const int SSS_MAX_STEPS = 32;
-const float SSS_MAX_RAY_DISTANCE = 1.0;
-const float SSS_THICKNESS = 0.02;
+uniform sampler2DShadow TextureDepth;
+
+const int SSS_MAX_STEPS = 1024;
+const float SSS_MAX_RAY_DISTANCE = 0.5;
+const float SSS_THICKNESS = 0.05;
 //const float SSS_MAX_STEP_LENGTH = SSS_MAX_RAY_DISTANCE / SSS_MAX_STEPS;
 
 float saturate(float v)
@@ -122,18 +124,19 @@ vec3 ComputeLight(Light light, vec3 worldPos, vec3 worldNormal, vec4 materialCol
 
 float ScreenSpaceShadow(Light light, vec3 worldPos)
 {
-    float maxStepLength = SSS_MAX_RAY_DISTANCE / SSS_MAX_STEPS;
-    vec3 rayPos = (MatrixCamera * vec4(worldPos, 1.0)).xyz;
-    vec3 rayDir = (MatrixCamera * vec4(light.direction, 0.0)).xyz;
+    float stepLength = SSS_MAX_RAY_DISTANCE / float(SSS_MAX_STEPS);
 
-    vec3 rayStep = rayDir * maxStepLength;
+    vec3 rayPos = (MatrixCamera * vec4(worldPos, 1.0)).xyz;
+    vec3 rayDir = (MatrixCamera * vec4(-light.direction, 0.0)).xyz;
+
+    vec3 rayStep = rayDir * stepLength;
 
     float occlusion = 0.0;
     for (int i = 0; i < SSS_MAX_STEPS; i++)
     {
         rayPos += rayStep;
 
-        // Determine current ray position UV coords
+        // Determine current ray UV coords
         vec4 uv = MatrixProjection * vec4(rayPos, 1.0);
         uv = uv / uv.w;
         uv = uv * 0.5 + 0.5;
@@ -141,8 +144,8 @@ float ScreenSpaceShadow(Light light, vec3 worldPos)
         if (uv.x >= 0.0 && uv.x <= 1.0 && uv.y >= 0.0 && uv.y <= 1.0)
         {
             // Sample depth texture
-            //float depth = texture(TextureDepth, uv.xy);
-            float depth = 0.9;
+            float depth = texture(TextureDepth, uv.xyz);
+
             float depthDelta = rayPos.z - depth;
 
             if (depthDelta > 0.0 && depthDelta < SSS_THICKNESS)
@@ -154,6 +157,7 @@ float ScreenSpaceShadow(Light light, vec3 worldPos)
         }
     }
 
+    // Convert to visibility
     return 1.0 - occlusion;
 }
 
@@ -202,19 +206,24 @@ void main()
         directLight += ComputeLight(Lights[i], worldPos, worldNormal, matColor);
     }
 
-    // Screen space shadows
-    float sss = 1.0;
-    for (int i = 0; i < LightCount; i++)
-    {
-        sss *= ScreenSpaceShadow(Lights[i], worldPos);
-    }
+    // Screen space shadows (assuming there is only 1 light in the scene)
+    float sss = ScreenSpaceShadow(Lights[0], worldPos);
 
     // Add all lighting components
     //OutputColor = vec4(envLighting + emissiveLighting + directLight, 1);
-    OutputColor = vec4(directLight * sss, 1);
+
+    // Display SSS in red
+    vec3 c = directLight + emissiveLighting;
+    c.r = c.r + (1.0 - sss);
+    OutputColor = vec4(c, 1);
 
     // Fog
     float distToCamera = length(worldPos - ViewPos);
     float fogFactor = 1 / pow(2, EnvFogDensity * distToCamera * distToCamera);
     OutputColor = mix(EnvFogColor, OutputColor, fogFactor);
+
+    // Display depth
+    //vec3 depthUV = vec3(gl_FragCoord.x / 1280.0, gl_FragCoord.y / 720.0, gl_FragCoord.z);
+    //depthUV = depthUV * gl_FragCoord.w;
+    //OutputColor = vec4(vec3(texture(TextureDepth, depthUV)), 1.0);
 }

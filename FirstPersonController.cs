@@ -6,7 +6,7 @@ namespace OpenTKBase
 {
     public class FirstPersonController : Component
     {
-        public float moveSpeed = 50.0f;
+        public float moveSpeed = 10.0f;
         public float rotateSpeed = MathF.PI;
 
         private Vector2 rotation = Vector2.Zero;

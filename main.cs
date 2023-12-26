@@ -54,7 +54,7 @@ namespace SDLBase
 
         static void CreateRandomTree(Random rnd, float forestSize)
         {
-            float s = forestSize * 0.5f;
+            float s = forestSize * 0.2f;
 
             // Trunk
             float heightTrunk = rnd.Range(0.5f, 1.5f);
@@ -111,15 +111,19 @@ namespace SDLBase
         {
             // Setup directional light turned 30 degrees down
             GameObject go = new GameObject();
-            go.transform.position = new Vector3(0.0f, 3.0f, 0.0f);
+            go.transform.position = new Vector3(0.0f, 10.0f, 20.0f);
             go.transform.rotation = Quaternion.FromAxisAngle(Vector3.UnitX, -MathF.PI * 0.16f);
             Light light = go.AddComponent<Light>();
-            light.type = Light.Type.Directional;
+            light.type = Light.Type.Spot;
             light.lightColor = Color.White;
-            light.intensity = 2.0f;
+            light.intensity = 5.0f;
             light.range = 200;
             light.cone = new Vector2(0.0f, MathF.PI / 2.0f);
             //light.SetShadow(true, 2048);
+
+            (GameObject sphere, Material sphereMaterial) = CreateSphere();
+            sphereMaterial.Set("ColorEmissive", Color4.White);
+            sphere.transform.position = go.transform.position;
 
             return go;
         }
@@ -128,7 +132,7 @@ namespace SDLBase
         {
             Mesh mesh = GeometryFactory.AddSphere(0.5f, 32, true);
 
-            Material material = new Material(Shader.Find("Shaders/phong_pp"));
+            Material material = new Material(Shader.Find("Shaders/phong_pp_sss"));
             material.Set("Color", Color4.White);
             material.Set("ColorEmissive", Color4.Black);
             material.Set("Specular", Vector2.UnitY);
@@ -197,6 +201,7 @@ namespace SDLBase
             Camera camera = cameraObject.AddComponent<Camera>();
             camera.transform.position = new Vector3(0.0f, 2.0f, 0.0f);
             camera.ortographic = false;
+            camera.InitDepthTexture(app.resX, app.resY);
             FirstPersonController fps = cameraObject.AddComponent<FirstPersonController>();
 
             // Create pipeline

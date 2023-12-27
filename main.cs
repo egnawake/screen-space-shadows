@@ -1,8 +1,9 @@
-﻿using OpenTK.Mathematics;
+using OpenTK.Mathematics;
 using OpenTKBase;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace SDLBase
 {
@@ -188,13 +189,65 @@ namespace SDLBase
             return ret;
         }
 
+        static GameObject CreateModel(string path)
+        {
+            // Import model file
+            Assimp.AssimpContext importer = new Assimp.AssimpContext();
+            Assimp.Scene scene = importer.ImportFile(path + "/scene.gltf");
+
+            Console.WriteLine($"[Assimp] Loaded {path}");
+            Console.WriteLine($"[Assimp] Mesh count: {scene.MeshCount}");
+
+            Assimp.Mesh assimpMesh = scene.Meshes[0];
+
+            Console.WriteLine($"[Assimp] Texture coord channels: {assimpMesh.TextureCoordinateChannelCount}");
+
+            Mesh m = new Mesh();
+            m.SetVertices(assimpMesh.Vertices
+                .Select((Assimp.Vector3D v) => new Vector3(v.X, v.Y, v.Z))
+                .ToList());
+            m.SetIndices(new List<uint>(assimpMesh.GetUnsignedIndices()));
+            m.SetNormals(assimpMesh.Normals
+                .Select((Assimp.Vector3D n) => new Vector3(n.X, n.Y, n.Z))
+                .ToList());
+            m.SetUVs(assimpMesh.TextureCoordinateChannels[0]
+                .Select((Assimp.Vector3D uv) => new Vector2(uv.X, uv.Y))
+                .ToList());
+
+            GameObject go = new GameObject();
+            MeshFilter mf = go.AddComponent<MeshFilter>();
+            mf.mesh = m;
+
+            MeshRenderer mr = go.AddComponent<MeshRenderer>();
+            Material material = new Material(Shader.Find("Shaders/phong_pp_sss"));
+
+            material.Set("Color", Color4.White);
+            material.Set("Specular", Vector2.UnitY);
+            material.Set("ColorEmissive", Color4.Black);
+
+            Texture baseColor = new Texture(OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat, OpenTK.Graphics.OpenGL.TextureMinFilter.Linear, true);
+            baseColor.Load(path + "/textures/material_0_baseColor.png");
+            material.Set("BaseColor", baseColor);
+
+            Texture normalMap = new Texture(OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat, OpenTK.Graphics.OpenGL.TextureMinFilter.Linear, true);
+            normalMap.Load(path + "/textures/material_0_normal.png");
+            material.Set("NormalMap", normalMap);
+
+            mr.material = material;
+
+            return go;
+        }
+
         static void ExecuteApp_Forest(OpenTKApp app)
         {
             SetupEnvironment();
 
             var light = SetupLights();
 
-            var ground = CreateForest(light);
+            GameObject sword = CreateModel("Models/elemental_sword_ice");
+            sword.transform.position = new Vector3(0f, 18f, 1f);
+            sword.transform.rotation = Quaternion.FromAxisAngle(Vector3.UnitX, MathF.PI / 2f);
+            sword.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
 
             // Create camera
             GameObject cameraObject = new GameObject();

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
@@ -160,6 +160,9 @@ namespace OpenTKBase
                 zParams.Z = zParams.X / camera.farPlane;
                 zParams.W = zParams.Y / camera.farPlane;
                 envMaterial.Set("ZBufferParams", zParams);
+
+                Vector2 cameraParams = new Vector2(camera.nearPlane, camera.farPlane);
+                envMaterial.Set("CameraParams", cameraParams);
 
                 Shader.SetMatrix(Shader.MatrixType.Camera, camera.transform.worldToLocalMatrix);
                 Shader.SetMatrix(Shader.MatrixType.InvCamera, camera.transform.localToWorldMatrix);

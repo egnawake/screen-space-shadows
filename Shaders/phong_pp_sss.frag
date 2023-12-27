@@ -1,4 +1,4 @@
-#version 330 core
+﻿#version 330 core
 
 uniform vec4    MaterialColor = vec4(1,1,0,1);
 uniform vec2    MaterialSpecular = vec2(0,1);
@@ -39,6 +39,7 @@ uniform int     LightCount;
 uniform Light   Lights[MAX_LIGHTS];
 
 uniform sampler2D EnvTextureDepth;
+uniform vec4 EnvZBufferParams;
 
 const int SSS_MAX_STEPS = 1024;
 const float SSS_MAX_RAY_DISTANCE = 0.5;
@@ -145,6 +146,7 @@ float ScreenSpaceShadow(Light light, vec3 worldPos)
         {
             // Sample depth texture
             float depth = texture(EnvTextureDepth, uv.xy).r;
+            depth = 1.0 / (EnvZBufferParams.z * depth + EnvZBufferParams.w);
 
             float depthDelta = rayPos.z - depth;
 

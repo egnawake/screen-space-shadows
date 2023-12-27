@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
@@ -153,6 +153,13 @@ namespace OpenTKBase
                 GL.ClearColor(camera.GetClearColor());
                 GL.ClearDepth(camera.GetClearDepth());
                 GL.Clear(camera.GetClearFlags());
+
+                Vector4 zParams = new Vector4();
+                zParams.Y = camera.nearPlane / camera.farPlane;
+                zParams.X = 1.0f - zParams.Y;
+                zParams.Z = zParams.X / camera.farPlane;
+                zParams.W = zParams.Y / camera.farPlane;
+                envMaterial.Set("ZBufferParams", zParams);
 
                 Shader.SetMatrix(Shader.MatrixType.Camera, camera.transform.worldToLocalMatrix);
                 Shader.SetMatrix(Shader.MatrixType.InvCamera, camera.transform.localToWorldMatrix);

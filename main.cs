@@ -108,23 +108,39 @@ namespace SDLBase
             env.Set("CubeMap", cubeMap);
         }
 
-        static GameObject SetupLights()
+        static void SetupLights()
         {
-            // Setup directional light turned 30 degrees down
+            GameObject d = CreateDirectionalLight(2.0f);
+            d.transform.rotation = Quaternion.FromEulerAngles(-45f, 0f, 0f);
+        }
+
+        static GameObject CreateSpotLight()
+        {
             GameObject go = new GameObject();
-            go.transform.position = new Vector3(0.0f, 10.0f, 20.0f);
-            go.transform.rotation = Quaternion.FromAxisAngle(Vector3.UnitX, -MathF.PI * 0.16f);
+            go.transform.position = new Vector3(10.0f, 20.0f, 20.0f);
             Light light = go.AddComponent<Light>();
             light.type = Light.Type.Spot;
             light.lightColor = Color.White;
-            light.intensity = 5.0f;
+            light.intensity = 3.0f;
             light.range = 200;
             light.cone = new Vector2(0.0f, MathF.PI / 2.0f);
-            //light.SetShadow(true, 2048);
+            light.SetShadow(true, 2048);
 
             (GameObject sphere, Material sphereMaterial) = CreateSphere();
             sphereMaterial.Set("ColorEmissive", Color4.White);
-            sphere.transform.position = go.transform.position;
+            sphere.transform.parent = go.transform;
+            sphere.transform.localPosition = Vector3.Zero;
+
+            return go;
+        }
+
+        static GameObject CreateDirectionalLight(float intensity)
+        {
+            GameObject go = new GameObject();
+            Light light = go.AddComponent<Light>();
+            light.type = Light.Type.Directional;
+            light.lightColor = Color.White;
+            light.intensity = intensity;
 
             return go;
         }
@@ -242,7 +258,10 @@ namespace SDLBase
         {
             SetupEnvironment();
 
-            var light = SetupLights();
+            SetupLights();
+
+            var ground = CreateGround(120f);
+            CreateSkysphere(480f);
 
             GameObject sword = CreateModel("Models/elemental_sword_ice");
             sword.transform.position = new Vector3(0f, 18f, 1f);
@@ -252,7 +271,7 @@ namespace SDLBase
             // Create camera
             GameObject cameraObject = new GameObject();
             Camera camera = cameraObject.AddComponent<Camera>();
-            camera.transform.position = new Vector3(0.0f, 2.0f, 0.0f);
+            camera.transform.position = new Vector3(1.5f, 10.0f, 15.0f);
             camera.ortographic = false;
             camera.InitDepthTexture(app.resX, app.resY);
             FirstPersonController fps = cameraObject.AddComponent<FirstPersonController>();

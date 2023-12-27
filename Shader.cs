@@ -277,6 +277,10 @@ namespace OpenTKBase
                                     texture.Set(textureUnit);
                                     GL.Uniform1(u.slot, textureUnit++);
                                 }
+                                else
+                                {
+                                    GL.Uniform1(u.slot, textureUnit);
+                                }
                             }
                             break;
                         case Uniform.Type.EnvTexture:
@@ -287,6 +291,10 @@ namespace OpenTKBase
                                 {
                                     texture.Set(textureUnit);
                                     GL.Uniform1(u.slot, textureUnit++);
+                                }
+                                else
+                                {
+                                    GL.Uniform1(u.slot, textureUnit);
                                 }
                             }
                             break;

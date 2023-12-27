@@ -128,7 +128,7 @@ namespace OpenTKBase
             return true;
         }
 
-        public bool CreateDepth(int width = 0, int height = 0)
+        public bool CreateDepth(int width = 0, int height = 0, bool shadowmap = false)
         {
             if (width != 0) this.width = width;
             if (height != 0) this.height = height;
@@ -139,9 +139,13 @@ namespace OpenTKBase
 
             // Sampling outside should return 1.0f
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureBorderColor, new float[4] { 1.0f, 1.0f, 1.0f, 1.0f });
-            // Need to setup the comparison operator as well
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureCompareMode, (int)All.CompareRefToTexture);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureCompareFunc, (int)All.Lequal);
+
+            if (shadowmap)
+            {
+                // Need to setup the comparison operator as well
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureCompareMode, (int)All.CompareRefToTexture);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureCompareFunc, (int)All.Lequal);
+            }
 
             return true;
         }

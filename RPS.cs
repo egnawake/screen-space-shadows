@@ -35,7 +35,7 @@ namespace OpenTKBase
             if (defaultShadowmap == null)
             {
                 defaultShadowmap = new Texture();
-                defaultShadowmap.CreateDepth(1, 1);
+                defaultShadowmap.CreateDepth(1, 1, true);
             }
 
             return defaultShadowmap;

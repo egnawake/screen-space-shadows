@@ -46,7 +46,7 @@ namespace OpenTKBase
         public void InitDepthTexture(int sizeX, int sizeY)
         {
             _depthTex = new Texture(OpenTK.Graphics.OpenGL.TextureWrapMode.ClampToBorder, OpenTK.Graphics.OpenGL.TextureMinFilter.Nearest, false);
-            _depthTex.CreateDepth(sizeX, sizeY);
+            _depthTex.CreateDepth(sizeX, sizeY, false);
             _depthTex.CreateRendertarget();
         }
 

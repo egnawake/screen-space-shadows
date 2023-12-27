@@ -25,7 +25,7 @@ namespace OpenTKBase
             if (enable)
             {
                 shadowmap = new Texture(OpenTK.Graphics.OpenGL.TextureWrapMode.ClampToBorder, OpenTK.Graphics.OpenGL.TextureMinFilter.Nearest, false);
-                shadowmap.CreateDepth(shadowmapResolution, shadowmapResolution);
+                shadowmap.CreateDepth(shadowmapResolution, shadowmapResolution, true);
                 shadowmap.CreateRendertarget();
             }
             else

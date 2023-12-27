@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
@@ -155,7 +155,7 @@ namespace OpenTKBase
                 GL.Clear(camera.GetClearFlags());
 
                 Vector4 zParams = new Vector4();
-                zParams.Y = camera.nearPlane / camera.farPlane;
+                zParams.Y = camera.farPlane / camera.nearPlane;
                 zParams.X = 1.0f - zParams.Y;
                 zParams.Z = zParams.X / camera.farPlane;
                 zParams.W = zParams.Y / camera.farPlane;

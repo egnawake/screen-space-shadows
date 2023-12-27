@@ -1,4 +1,4 @@
-﻿#version 330 core
+#version 330 core
 
 uniform vec4    MaterialColor = vec4(1,1,0,1);
 uniform vec2    MaterialSpecular = vec2(0,1);
@@ -38,7 +38,7 @@ struct Light
 uniform int     LightCount;
 uniform Light   Lights[MAX_LIGHTS];
 
-uniform sampler2DShadow TextureDepth;
+uniform sampler2D EnvTextureDepth;
 
 const int SSS_MAX_STEPS = 1024;
 const float SSS_MAX_RAY_DISTANCE = 0.5;
@@ -144,7 +144,7 @@ float ScreenSpaceShadow(Light light, vec3 worldPos)
         if (uv.x >= 0.0 && uv.x <= 1.0 && uv.y >= 0.0 && uv.y <= 1.0)
         {
             // Sample depth texture
-            float depth = texture(TextureDepth, uv.xyz);
+            float depth = texture(EnvTextureDepth, uv.xy).r;
 
             float depthDelta = rayPos.z - depth;
 
@@ -225,5 +225,5 @@ void main()
     // Display depth
     //vec3 depthUV = vec3(gl_FragCoord.x / 1280.0, gl_FragCoord.y / 720.0, gl_FragCoord.z);
     //depthUV = depthUV * gl_FragCoord.w;
-    //OutputColor = vec4(vec3(texture(TextureDepth, depthUV)), 1.0);
+    //OutputColor = vec4(vec3(texture(EnvTextureDepth, depthUV)), 1.0);
 }

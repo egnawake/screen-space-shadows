@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
@@ -54,6 +54,7 @@ namespace OpenTKBase
             // Render depth textures
             foreach (var camera in allCameras)
             {
+                // Set as render target
                 camera.depthTex.Set(-1);
 
                 GL.ClearDepth(camera.GetClearDepth());
@@ -72,7 +73,7 @@ namespace OpenTKBase
             }
 
             Material envMaterial = OpenTKApp.APP.mainScene.environment;
-            envMaterial.Set("TextureDepth", allCameras[0].depthTex.GetDepthTexture());
+            envMaterial.Set("Depth", allCameras[0].depthTex.GetDepthTexture());
 
             // Invert cull mode for shadowmap rendering (only works if objects are all "solid")
             GL.Enable(EnableCap.CullFace);

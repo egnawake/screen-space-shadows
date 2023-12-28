@@ -110,8 +110,8 @@ namespace SDLBase
 
         static void SetupLights()
         {
-            GameObject d = CreateDirectionalLight(2.0f);
-            d.transform.rotation = Quaternion.FromEulerAngles(-45f, 0f, 0f);
+            GameObject p = CreatePointLight(2.0f);
+            p.transform.position = new Vector3(6f, 14f, 10f);
         }
 
         static GameObject CreateSpotLight()
@@ -141,6 +141,23 @@ namespace SDLBase
             light.type = Light.Type.Directional;
             light.lightColor = Color.White;
             light.intensity = intensity;
+
+            return go;
+        }
+
+        static GameObject CreatePointLight(float intensity)
+        {
+            GameObject go = new GameObject();
+            Light light = go.AddComponent<Light>();
+            light.type = Light.Type.Point;
+            light.lightColor = Color.White;
+            light.intensity = intensity;
+            light.range = 200;
+
+            (GameObject sphere, Material sphereMaterial) = CreateSphere();
+            sphereMaterial.Set("ColorEmissive", Color4.White);
+            sphere.transform.parent = go.transform;
+            sphere.transform.localPosition = Vector3.Zero;
 
             return go;
         }
@@ -205,50 +222,66 @@ namespace SDLBase
             return ret;
         }
 
-        static GameObject CreateModel(string path)
+        static Mesh ConvertMesh(Assimp.Mesh src)
+        {
+            Mesh m = new Mesh();
+            m.SetVertices(src.Vertices
+                .Select((Assimp.Vector3D v) => new Vector3(v.X, v.Y, v.Z))
+                .ToList());
+            m.SetIndices(new List<uint>(src.GetUnsignedIndices()));
+            m.SetNormals(src.Normals
+                .Select((Assimp.Vector3D n) => new Vector3(n.X, n.Y, n.Z))
+                .ToList());
+            m.SetUVs(src.TextureCoordinateChannels[0]
+                .Select((Assimp.Vector3D uv) => new Vector2(uv.X, uv.Y))
+                .ToList());
+
+            return m;
+        }
+
+        static GameObject LoadModel(string modelPath, string baseColorPath = "",
+            string normalMapPath = "")
         {
             // Import model file
             Assimp.AssimpContext importer = new Assimp.AssimpContext();
-            Assimp.Scene scene = importer.ImportFile(path + "/scene.gltf");
+            Assimp.Scene scene = importer.ImportFile(modelPath, Assimp.PostProcessSteps.FlipUVs);
 
-            Console.WriteLine($"[Assimp] Loaded {path}");
-            Console.WriteLine($"[Assimp] Mesh count: {scene.MeshCount}");
+            Console.WriteLine($"[Assimp] Loaded {modelPath}");
 
+            // Create engine mesh
             Assimp.Mesh assimpMesh = scene.Meshes[0];
+            Mesh m = ConvertMesh(assimpMesh);
 
-            Console.WriteLine($"[Assimp] Texture coord channels: {assimpMesh.TextureCoordinateChannelCount}");
-
-            Mesh m = new Mesh();
-            m.SetVertices(assimpMesh.Vertices
-                .Select((Assimp.Vector3D v) => new Vector3(v.X, v.Y, v.Z))
-                .ToList());
-            m.SetIndices(new List<uint>(assimpMesh.GetUnsignedIndices()));
-            m.SetNormals(assimpMesh.Normals
-                .Select((Assimp.Vector3D n) => new Vector3(n.X, n.Y, n.Z))
-                .ToList());
-            m.SetUVs(assimpMesh.TextureCoordinateChannels[0]
-                .Select((Assimp.Vector3D uv) => new Vector2(uv.X, 1f - uv.Y))
-                .ToList());
-
+            // Set up game object
             GameObject go = new GameObject();
+
             MeshFilter mf = go.AddComponent<MeshFilter>();
             mf.mesh = m;
 
-            MeshRenderer mr = go.AddComponent<MeshRenderer>();
+            // Set up material
             Material material = new Material(Shader.Find("Shaders/phong_pp_sss"));
 
             material.Set("Color", Color4.White);
             material.Set("Specular", Vector2.UnitY);
             material.Set("ColorEmissive", Color4.Black);
 
-            Texture baseColor = new Texture(OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat, OpenTK.Graphics.OpenGL.TextureMinFilter.Linear, true);
-            baseColor.Load(path + "/textures/material_0_baseColor.png");
-            material.Set("BaseColor", baseColor);
+            // Load textures
+            if (baseColorPath.Length > 0)
+            {
+                Texture baseColor = new Texture(OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat,
+                    OpenTK.Graphics.OpenGL.TextureMinFilter.Linear, true);
+                baseColor.Load(baseColorPath);
+                material.Set("BaseColor", baseColor);
+            }
 
-            Texture normalMap = new Texture(OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat, OpenTK.Graphics.OpenGL.TextureMinFilter.Linear, true);
-            normalMap.Load(path + "/textures/material_0_normal.png");
-            material.Set("NormalMap", normalMap);
+            if (normalMapPath.Length > 0)
+            {
+                Texture normalMap = new Texture(OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat, OpenTK.Graphics.OpenGL.TextureMinFilter.Linear, true);
+                normalMap.Load(normalMapPath);
+                material.Set("NormalMap", normalMap);
+            }
 
+            MeshRenderer mr = go.AddComponent<MeshRenderer>();
             mr.material = material;
 
             return go;
@@ -260,18 +293,18 @@ namespace SDLBase
 
             SetupLights();
 
-            var ground = CreateGround(120f);
+            CreateGround(120f);
             CreateSkysphere(480f);
 
-            GameObject sword = CreateModel("Models/elemental_sword_ice");
-            sword.transform.position = new Vector3(0f, 18f, 1f);
-            sword.transform.rotation = Quaternion.FromAxisAngle(Vector3.UnitX, MathF.PI / 2f);
-            sword.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            GameObject mech = LoadModel("Models/fishie/scene.gltf",
+                "Models/fishie/textures/Material_baseColor.png",
+                "Models/fishie/textures/Material_normal.png");
+            mech.transform.localScale = new Vector3(8f);
 
             // Create camera
             GameObject cameraObject = new GameObject();
             Camera camera = cameraObject.AddComponent<Camera>();
-            camera.transform.position = new Vector3(1.5f, 10.0f, 15.0f);
+            camera.transform.position = new Vector3(0f, 10.0f, 25.0f);
             camera.ortographic = false;
             camera.InitDepthTexture(app.resX, app.resY);
             FirstPersonController fps = cameraObject.AddComponent<FirstPersonController>();

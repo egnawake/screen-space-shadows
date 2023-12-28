@@ -33,6 +33,9 @@ It is possible nothing additional is needed, NuGet is used to pull the OpenTK pr
 
 ## Licenses
 
+Used model is [Fishie | VGDC](https://sketchfab.com/3d-models/fishie-vgdc-6da1d9a980ee4608a2cc15af0649a583),
+available under the [CC BY-NC 4.0](http://creativecommons.org/licenses/by-nc/4.0/) license.
+
 Engine code developed by [Diogo de Andrade][DAndrade] and [Nuno Fachada][NFachada]; it is made available under the [Mozilla Public License 2.0][MPLv2].
 
 Code uses:

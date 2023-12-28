@@ -41,14 +41,18 @@ uniform Light   Lights[MAX_LIGHTS];
 uniform sampler2D EnvTextureDepth;
 uniform vec4 EnvZBufferParams;
 
-const int SSS_MAX_STEPS = 1024;
-const float SSS_MAX_RAY_DISTANCE = 0.5;
-const float SSS_THICKNESS = 0.05;
-//const float SSS_MAX_STEP_LENGTH = SSS_MAX_RAY_DISTANCE / SSS_MAX_STEPS;
+const int SSS_MAX_STEPS = 16;
+const float SSS_MAX_RAY_DISTANCE = 0.25;
+const float SSS_THICKNESS = 0.02;
 
 float saturate(float v)
 {
     return clamp(v, 0, 1);
+}
+
+float GetLinearDepth(float z)
+{
+    return 1.0 / (EnvZBufferParams.z * z + EnvZBufferParams.w);
 }
 
 float ComputeAttenuation(Light light, vec3 worldPos)
@@ -128,9 +132,10 @@ float ScreenSpaceShadow(Light light, vec3 worldPos)
     float stepLength = SSS_MAX_RAY_DISTANCE / float(SSS_MAX_STEPS);
 
     vec3 rayPos = (MatrixCamera * vec4(worldPos, 1.0)).xyz;
-    vec3 rayDir = (MatrixCamera * vec4(-light.direction, 0.0)).xyz;
+    vec3 lightPos = (MatrixCamera * vec4(light.position, 1.0)).xyz;
+    vec3 toLight = normalize(lightPos - rayPos);
 
-    vec3 rayStep = rayDir * stepLength;
+    vec3 rayStep = toLight * stepLength;
 
     float occlusion = 0.0;
     for (int i = 0; i < SSS_MAX_STEPS; i++)
@@ -146,9 +151,9 @@ float ScreenSpaceShadow(Light light, vec3 worldPos)
         {
             // Sample depth texture
             float depth = texture(EnvTextureDepth, uv.xy).r;
-            depth = 1.0 / (EnvZBufferParams.z * depth + EnvZBufferParams.w);
+            depth = GetLinearDepth(depth);
 
-            float depthDelta = rayPos.z - depth;
+            float depthDelta = -rayPos.z - depth;
 
             if (depthDelta > 0.0 && depthDelta < SSS_THICKNESS)
             {
@@ -211,21 +216,13 @@ void main()
     // Screen space shadows (assuming there is only 1 light in the scene)
     float sss = ScreenSpaceShadow(Lights[0], worldPos);
 
-    // Add all lighting components
-    //OutputColor = vec4(envLighting + emissiveLighting + directLight, 1);
-
-    // Display SSS in red
-    vec3 c = directLight + emissiveLighting;
-    c.r = c.r + (1.0 - sss);
+    // Lighting
+    vec3 c = directLight + emissiveLighting + envLighting;
+    c = c * sss;
     OutputColor = vec4(c, 1);
 
     // Fog
     float distToCamera = length(worldPos - ViewPos);
     float fogFactor = 1 / pow(2, EnvFogDensity * distToCamera * distToCamera);
     OutputColor = mix(EnvFogColor, OutputColor, fogFactor);
-
-    // Display depth
-    //vec3 depthUV = vec3(gl_FragCoord.x / 1280.0, gl_FragCoord.y / 720.0, gl_FragCoord.z);
-    //depthUV = depthUV * gl_FragCoord.w;
-    //OutputColor = vec4(vec3(texture(EnvTextureDepth, depthUV)), 1.0);
 }

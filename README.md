@@ -13,12 +13,6 @@ position in screen space. If the ray's depth is larger (occluded from the camera
 be in shadow. The render pipeline must include a pass for generating the depth buffer required by
 the algorithm.
 
-## Issues
-
-- Crash when setting `phong_pp_sss` and `phong_pp` shaders on different materials at the same time
-- Can't see any effect from screen space shadows unless the camera is very close to an object
-- Crash when trying to add environment lighting
-
 ## References
 
 - [Inside Bend: Screen Space Shadows](https://www.bendstudio.com/blog/inside-bend-screen-space-shadows/)

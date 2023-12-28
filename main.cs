@@ -227,7 +227,7 @@ namespace SDLBase
                 .Select((Assimp.Vector3D n) => new Vector3(n.X, n.Y, n.Z))
                 .ToList());
             m.SetUVs(assimpMesh.TextureCoordinateChannels[0]
-                .Select((Assimp.Vector3D uv) => new Vector2(uv.X, uv.Y))
+                .Select((Assimp.Vector3D uv) => new Vector2(uv.X, 1f - uv.Y))
                 .ToList());
 
             GameObject go = new GameObject();

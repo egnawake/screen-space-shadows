@@ -228,8 +228,9 @@ void main()
     float sss = ScreenSpaceShadow(Lights[0], worldPos);
 
     // Lighting
-    vec3 c = directLight + emissiveLighting + envLighting;
-    c = c * sss;
+    vec3 c = emissiveLighting + envLighting;
+    c = c + directLight * sss;
+    //c = vec3(sss);
     OutputColor = vec4(c, 1);
 
     // Fog

@@ -1,4 +1,4 @@
-﻿#version 330 core
+#version 330 core
 
 uniform vec4    MaterialColor = vec4(1,1,0,1);
 uniform vec2    MaterialSpecular = vec2(0,1);
@@ -132,8 +132,19 @@ float ScreenSpaceShadow(Light light, vec3 worldPos)
     float stepLength = SSS_MAX_RAY_DISTANCE / float(SSS_MAX_STEPS);
 
     vec3 rayPos = (MatrixCamera * vec4(worldPos, 1.0)).xyz;
+
+    vec3 toLight;
+
+    if (light.type == 0)
+    {
+        toLight = -light.direction;
+    }
+    else if (light.type == 1 || light.type == 2)
+    {
     vec3 lightPos = (MatrixCamera * vec4(light.position, 1.0)).xyz;
-    vec3 toLight = normalize(lightPos - rayPos);
+        toLight = normalize(lightPos - rayPos);
+    }
+
 
     vec3 rayStep = toLight * stepLength;
 

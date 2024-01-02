@@ -6,14 +6,21 @@ namespace OpenTKBase
 {
     public class FirstPersonController : Component
     {
-        public float moveSpeed = 10.0f;
-        public float rotateSpeed = MathF.PI;
+        public float moveSpeed = 1f;
+        public float rotateSpeed = MathF.PI / 2.0f;
+        public float boostFactor = 3.0f;
 
         private Vector2 rotation = Vector2.Zero;
 
         public override void Update()
         {
             Vector3 moveDir = Vector3.Zero;
+            float boost = 1.0f;
+
+            if (OpenTKApp.APP.GetKey(Keys.LeftShift))
+            {
+                boost = boostFactor;
+            }
 
             if (OpenTKApp.APP.GetKey(Keys.W)) moveDir.Z = 1.0f;
             if (OpenTKApp.APP.GetKey(Keys.S)) moveDir.Z = -1.0f;
@@ -26,7 +33,7 @@ namespace OpenTKBase
             var tr = Vector3.Cross(tf, Vector3.UnitY); tr.Y = 0.0f; tr.Normalize();
 
             moveDir = moveDir.X * tr + moveDir.Z * tf + moveDir.Y * Vector3.UnitY;
-            moveDir *= moveSpeed * OpenTKApp.APP.timeDeltaTime;
+            moveDir *= moveSpeed * boost * OpenTKApp.APP.timeDeltaTime;
 
             transform.position += moveDir;
 

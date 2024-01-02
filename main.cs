@@ -110,18 +110,19 @@ namespace SDLBase
 
         static void SetupLights()
         {
-            GameObject p = CreatePointLight(2.0f);
-            p.transform.position = new Vector3(6f, 14f, 10f);
+            GameObject l = CreateSpotLight(2.0f);
+            l.transform.rotation = Quaternion.FromAxisAngle(Vector3.UnitY, MathHelper.DegreesToRadians(30f))
+                * Quaternion.FromAxisAngle(Vector3.UnitX, MathHelper.DegreesToRadians(-45f));
+            l.transform.position = new Vector3(2f, 4f, 2f);
         }
 
-        static GameObject CreateSpotLight()
+        static GameObject CreateSpotLight(float intensity)
         {
             GameObject go = new GameObject();
-            go.transform.position = new Vector3(10.0f, 20.0f, 20.0f);
             Light light = go.AddComponent<Light>();
             light.type = Light.Type.Spot;
             light.lightColor = Color.White;
-            light.intensity = 3.0f;
+            light.intensity = intensity;
             light.range = 200;
             light.cone = new Vector2(0.0f, MathF.PI / 2.0f);
             light.SetShadow(true, 2048);
@@ -293,18 +294,18 @@ namespace SDLBase
 
             SetupLights();
 
-            CreateGround(120f);
-            CreateSkysphere(480f);
+            CreateGround(10f);
+            CreateSkysphere(100f);
 
             GameObject mech = LoadModel("Models/fishie/scene.gltf",
                 "Models/fishie/textures/Material_baseColor.png",
                 "Models/fishie/textures/Material_normal.png");
-            mech.transform.localScale = new Vector3(8f);
+            mech.transform.rotation = Quaternion.FromAxisAngle(Vector3.UnitY, MathHelper.DegreesToRadians(20f));
 
             // Create camera
             GameObject cameraObject = new GameObject();
             Camera camera = cameraObject.AddComponent<Camera>();
-            camera.transform.position = new Vector3(0f, 10.0f, 25.0f);
+            camera.transform.position = new Vector3(0f, 1.2f, 2.75f);
             camera.ortographic = false;
             camera.InitDepthTexture(app.resX, app.resY);
             FirstPersonController fps = cameraObject.AddComponent<FirstPersonController>();

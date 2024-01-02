@@ -1,4 +1,4 @@
-#version 330 core
+﻿#version 330 core
 
 uniform vec4    MaterialColor = vec4(1,1,0,1);
 uniform vec2    MaterialSpecular = vec2(0,1);
@@ -41,8 +41,8 @@ uniform Light   Lights[MAX_LIGHTS];
 uniform sampler2D EnvTextureDepth;
 uniform vec4 EnvZBufferParams;
 
-const int SSS_MAX_STEPS = 16;
-const float SSS_MAX_RAY_DISTANCE = 0.25;
+const int SSS_MAX_STEPS = 32;
+const float SSS_MAX_RAY_DISTANCE = 0.1;
 const float SSS_THICKNESS = 0.02;
 
 float saturate(float v)
@@ -141,7 +141,7 @@ float ScreenSpaceShadow(Light light, vec3 worldPos)
     }
     else if (light.type == 1 || light.type == 2)
     {
-    vec3 lightPos = (MatrixCamera * vec4(light.position, 1.0)).xyz;
+        vec3 lightPos = (MatrixCamera * vec4(light.position, 1.0)).xyz;
         toLight = normalize(lightPos - rayPos);
     }
 

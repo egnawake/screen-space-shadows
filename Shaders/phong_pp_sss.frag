@@ -3,6 +3,7 @@
 uniform vec4    MaterialColor = vec4(1,1,0,1);
 uniform vec2    MaterialSpecular = vec2(0,1);
 uniform vec4    MaterialColorEmissive = vec4(0,0,0,1);
+uniform vec2    MaterialTiling = vec2(1, 1);
 uniform vec4    EnvColor;
 uniform vec4    EnvColorTop;
 uniform vec4    EnvColorMid;
@@ -198,7 +199,7 @@ void main()
         // Create tangent space
         vec3 binormal = cross(n, t) * fragTangent.w;
         mat3 TBN = mat3(t, binormal, n);
-        vec3 normalMap = texture(TextureNormalMap, fragUV).xyz * 2 - 1;
+        vec3 normalMap = texture(TextureNormalMap, fragUV * MaterialTiling).xyz * 2 - 1;
 
         worldNormal = TBN * normalMap;
     }
@@ -209,7 +210,7 @@ void main()
 
     // Compute material color
     vec4 matColor = MaterialColor;
-    if (HasTextureBaseColor) matColor *= texture(TextureBaseColor, fragUV);
+    if (HasTextureBaseColor) matColor *= texture(TextureBaseColor, fragUV * MaterialTiling);
 
     // Ambient component - get data from 4th mipmap of the cubemap (effective hardware blur)
     vec3 envLighting = EnvColor.xyz * MaterialColor.xyz * textureLod(EnvTextureCubeMap, worldNormal, 8).xyz;

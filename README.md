@@ -16,12 +16,15 @@ the algorithm.
 This implementation was based on [Panos Karabelas' article about screen space shadows][SSSKarabelas].
 
 The following is a screenshot of a scene rendered with only shadowmaps.
+
 ![3D scene, shadowmaps only.](sss-disabled.png)
 
 After enabling screen space shadows, some additional sharp shadowed areas are noticeable.
+
 ![3D scene, shadowmaps and screen space shadows.](sss-enabled.png)
 
 In this GIF, the effect is easier to see.
+
 ![GIF comparing rendered scene with and without screen space shadows.](sss-before-after.gif)
 
 ## References

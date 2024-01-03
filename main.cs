@@ -11,12 +11,12 @@ namespace SDLBase
     {
         public static void Main()
         {
-            OpenTKApp app = new OpenTKApp(1280, 720, "Forest", true);
+            OpenTKApp app = new OpenTKApp(1280, 720, "Screen space shadows", true);
 
             app.Initialize();
             app.LockMouse(true);
 
-            ExecuteApp_Forest(app);
+            ExecuteApp_SSS(app);
 
             app.Shutdown();
         }
@@ -290,7 +290,7 @@ namespace SDLBase
             return go;
         }
 
-        static void ExecuteApp_Forest(OpenTKApp app)
+        static void ExecuteApp_SSS(OpenTKApp app)
         {
             SetupEnvironment();
 

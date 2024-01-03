@@ -7,11 +7,10 @@ the Bachelor's in Videogames at Universidade Lusófona.
 particularly around geometry that are very close to each other. It complements the more general
 shadowmap technique.
 
-For each light, a ray is cast (in view space) from the pixel to be drawn to the light's position.
-At each step, the ray's current depth is compared to the value written on the depth buffer for that
-position. If the ray's depth is larger (occluded from the camera), that pixel should be in shadow.
-The render pipeline must include a pass for generating the depth buffer required by
-the algorithm.
+For each light, a ray is marched (in view space) from the pixel to be drawn in the light's direction.
+At each step, the ray's current position is compared to the value written on the depth buffer for that
+position. If the ray's Z coordinate is greater (occluded from the camera), that pixel should be in shadow.
+The render pipeline must include a pass for generating the depth buffer required by the algorithm.
 
 This implementation was based on [Panos Karabelas' article about screen space shadows][SSSKarabelas].
 

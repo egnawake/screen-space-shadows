@@ -134,8 +134,8 @@ float ScreenSpaceShadow(Light light, vec3 worldPos)
 
     vec3 rayPos = (MatrixCamera * vec4(worldPos, 1.0)).xyz;
 
+    // Find ray direction
     vec3 toLight;
-
     if (light.type == 0)
     {
         toLight = -light.direction;
@@ -145,7 +145,6 @@ float ScreenSpaceShadow(Light light, vec3 worldPos)
         vec3 lightPos = (MatrixCamera * vec4(light.position, 1.0)).xyz;
         toLight = normalize(lightPos - rayPos);
     }
-
 
     vec3 rayStep = toLight * stepLength;
 
@@ -159,14 +158,15 @@ float ScreenSpaceShadow(Light light, vec3 worldPos)
         uv = uv / uv.w;
         uv = uv * 0.5 + 0.5;
 
+        // If ray UVs are valid, sample depth texture and compare to ray Z coord
         if (uv.x >= 0.0 && uv.x <= 1.0 && uv.y >= 0.0 && uv.y <= 1.0)
         {
-            // Sample depth texture
             float depth = texture(EnvTextureDepth, uv.xy).r;
             depth = GetLinearDepth(depth);
 
             float depthDelta = -rayPos.z - depth;
 
+            // If ray Z is greater than depth, mark pixel as occluded
             if (depthDelta > 0.0 && depthDelta < SSS_THICKNESS)
             {
                 occlusion = 1.0;

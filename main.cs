@@ -27,9 +27,9 @@ namespace SDLBase
             mesh.ComputeNormalsAndTangentSpace();
 
             Texture grassTexture = new Texture(OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat, OpenTK.Graphics.OpenGL.TextureMinFilter.Linear, true);
-            grassTexture.Load("Textures/grass_basecolor.png");
+            grassTexture.Load("Textures/dirt_floor_diff_1k.png");
             Texture grassNormal = new Texture(OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat, OpenTK.Graphics.OpenGL.TextureMinFilter.Linear, true);
-            grassNormal.Load("Textures/grass_normal.png");
+            grassNormal.Load("Textures/dirt_floor_nor_gl_1k.png");
 
             Material material = new Material(Shader.Find("Shaders/phong_pp_sss"));
             material.Set("Color", Color4.White);
@@ -37,6 +37,7 @@ namespace SDLBase
             material.Set("Specular", new Vector2(2.0f, 128.0f));
             material.Set("BaseColor", grassTexture);
             material.Set("NormalMap", grassNormal);
+            material.Set("Tiling", new Vector2(10f, 10f));
 
             GameObject go = new GameObject();
             go.transform.position = new Vector3(0, 0, 0);
@@ -95,7 +96,7 @@ namespace SDLBase
         static void SetupEnvironment()
         {
             var cubeMap = new Texture();
-            cubeMap.LoadCube("Textures/cube_*.jpg");
+            cubeMap.LoadCube("Textures/arid2/arid2_*.jpg");
 
             var env = OpenTKApp.APP.mainScene.environment;
 
@@ -265,6 +266,7 @@ namespace SDLBase
             material.Set("Color", Color4.White);
             material.Set("Specular", Vector2.UnitY);
             material.Set("ColorEmissive", Color4.Black);
+            material.Set("Tiling", new Vector2(1f, 1f));
 
             // Load textures
             if (baseColorPath.Length > 0)
@@ -294,8 +296,9 @@ namespace SDLBase
 
             SetupLights();
 
-            CreateGround(10f);
-            CreateSkysphere(100f);
+            float groundSize = 100f;
+            CreateGround(groundSize);
+            CreateSkysphere(groundSize * 4f);
 
             GameObject mech = LoadModel("Models/fishie/scene.gltf",
                 "Models/fishie/textures/Material_baseColor.png",

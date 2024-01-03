@@ -222,16 +222,12 @@ void main()
     vec3 directLight = vec3(0,0,0);
     for (int i = 0; i < LightCount; i++)
     {
-        directLight += ComputeLight(Lights[i], worldPos, worldNormal, matColor);
+        directLight += ComputeLight(Lights[i], worldPos, worldNormal, matColor)
+            * ScreenSpaceShadow(Lights[i], worldPos);
     }
 
-    // Screen space shadows (assuming there is only 1 light in the scene)
-    float sss = ScreenSpaceShadow(Lights[0], worldPos);
-
     // Lighting
-    vec3 c = emissiveLighting + envLighting;
-    c = c + directLight * sss;
-    //c = vec3(sss);
+    vec3 c = emissiveLighting + envLighting + directLight;
     OutputColor = vec4(c, 1);
 
     // Fog

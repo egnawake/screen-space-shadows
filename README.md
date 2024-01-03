@@ -46,22 +46,25 @@ It is possible nothing additional is needed, NuGet is used to pull the OpenTK pr
 
 ## Licenses
 
-Used model is [Fishie | VGDC](https://sketchfab.com/3d-models/fishie-vgdc-6da1d9a980ee4608a2cc15af0649a583),
-available under the [CC BY-NC 4.0](http://creativecommons.org/licenses/by-nc/4.0/) license.
+[OpenTK], licensed under the [MIT] license.
 
-Engine code developed by [Diogo de Andrade][DAndrade] and [Nuno Fachada][NFachada]; it is made available under the [Mozilla Public License 2.0][MPLv2].
+Mech model: [Fishie | VGDC](https://sketchfab.com/3d-models/fishie-vgdc-6da1d9a980ee4608a2cc15af0649a583),
+available under the [CC BY-NC 4.0] license.
 
-Code uses:
+Ground texture: [Dirt Floor (Poly Haven)](https://polyhaven.com/a/dirt_floor), licensed as [CC0].
 
-* [OpenTK], licensed under the [MIT] license
-* Grass texture by Charlotte Baglioni/Dario Barresi, under the [CC0] license
-* Cubemap by [Emil Persson], under the [CC-BY3.0] license
+Environment map: *arid2* from [skiingpenguins' Skybox Pack](https://opengameart.org/content/skiingpenguins-skybox-pack), licensed as [CC BY-SA 3.0].
+
+Engine code developed by [Diogo de Andrade][DAndrade] and [Nuno Fachada][NFachada]; it is made
+available under the [Mozilla Public License 2.0][MPLv2].
 
 All the text and documentation (i.e., non-code files) are made available under
 the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
 License][CC BY-NC-SA 4.0].
 
 [MPLv2]:https://opensource.org/licenses/MPL-2.0
+[CC BY-NC 4.0]:http://creativecommons.org/licenses/by-nc/4.0/
+[CC BY-SA 3.0]:https://creativecommons.org/licenses/by-sa/3.0/
 [CC BY-NC-SA 4.0]:https://creativecommons.org/licenses/by-nc-sa/4.0/
 [CC-BY3.0]:https://creativecommons.org/licenses/by/3.0/
 [CC0]:https://creativecommons.org/publicdomain/zero/1.0/
@@ -70,5 +73,4 @@ License][CC BY-NC-SA 4.0].
 [MIT]:https://opensource.org/license/mit/
 [DAndrade]:https://github.com/DiogoDeAndrade
 [NFachada]:https://github.com/fakenmc
-[Emil Persson]:http://www.humus.name/
 [SSSKarabelas]:https://panoskarabelas.com/posts/screen_space_shadows/

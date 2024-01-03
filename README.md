@@ -26,15 +26,6 @@ In this GIF, the effect is easier to see.
 
 ![GIF comparing rendered scene with and without screen space shadows.](sss-before-after.gif)
 
-## References
-
-- [Inside Bend: Screen Space Shadows](https://www.bendstudio.com/blog/inside-bend-screen-space-shadows/)
-- [Contact Shadows | Unreal Engine 4.27 Documentation](https://docs.unrealengine.com/4.27/en-US/BuildingWorlds/LightingAndShadows/ContactShadows/) 
-- [ExileCon Dev Talk - Evolving Path of Exile's Renderer](https://www.youtube.com/watch?v=whyJzrVEgVc)
-- [Screen space shadows][SSSKarabelas], a blog post by [Panos Karabelas](https://panoskarabelas.com/)
-
-> TODO: adapt rest of readme as needed
-
 ## Installation
 
 It is possible nothing additional is needed, NuGet is used to pull the OpenTK project. In case something is needed:
@@ -42,6 +33,14 @@ It is possible nothing additional is needed, NuGet is used to pull the OpenTK pr
 ## Usage
 
 * Clone and use directly. Just need to change the function that is passed to the OpenTKApp.Run method to change the behaviour function.
+
+## References
+
+- [Inside Bend: Screen Space Shadows](https://www.bendstudio.com/blog/inside-bend-screen-space-shadows/)
+- [Contact Shadows | Unreal Engine 4.27 Documentation](https://docs.unrealengine.com/4.27/en-US/BuildingWorlds/LightingAndShadows/ContactShadows/) 
+- [ExileCon Dev Talk - Evolving Path of Exile's Renderer](https://www.youtube.com/watch?v=whyJzrVEgVc)
+- [Screen space shadows][SSSKarabelas], a blog post by [Panos Karabelas](https://panoskarabelas.com/)
+- Shader code adapted from Phong per-pixel lighting shader by [Diogo de Andrade][DAndrade]
 
 ## Licenses
 

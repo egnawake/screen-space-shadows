@@ -77,6 +77,7 @@ Press `Shift + Esc` to quit the program.
 - [ExileCon Dev Talk - Evolving Path of Exile's Renderer](https://www.youtube.com/watch?v=whyJzrVEgVc)
 - [Screen space shadows][SSSKarabelas], a blog post by [Panos Karabelas](https://panoskarabelas.com/)
 - Shader code adapted from Phong per-pixel lighting shader by [Diogo de Andrade][DAndrade]
+- Depth linearization formula from [*What is LinearEyeDepth() doing exactly?* - Unity Forum](https://forum.unity.com/threads/solved-what-is-lineareyedepth-doing-exactly.539791/)
 
 ## Licenses
 

@@ -14,7 +14,10 @@ The render pipeline must include a pass for generating the depth buffer required
 
 This implementation was based on [Panos Karabelas' article about screen space shadows][SSSKarabelas].
 
-The following is a screenshot of a scene rendered with only shadowmaps.
+## Demonstration
+
+The following is a screenshot of a scene rendered with only shadowmaps. The model has been loaded
+into the scene using the [AssimpNet] package.
 
 ![3D scene, shadowmaps only.](sss-disabled.png)
 
@@ -63,6 +66,8 @@ overall scene quality.
 
 [OpenTK], licensed under the [MIT] license.
 
+[AssimpNet], under the [MIT] license.
+
 Mech model: [Fishie | VGDC](https://sketchfab.com/3d-models/fishie-vgdc-6da1d9a980ee4608a2cc15af0649a583),
 available under the [CC BY-NC 4.0] license.
 
@@ -89,3 +94,4 @@ License][CC BY-NC-SA 4.0].
 [DAndrade]:https://github.com/DiogoDeAndrade
 [NFachada]:https://github.com/fakenmc
 [SSSKarabelas]:https://panoskarabelas.com/posts/screen_space_shadows/
+[AssimpNet]:https://bitbucket.org/Starnick/assimpnet

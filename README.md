@@ -26,9 +26,26 @@ In this GIF, the effect is easier to see.
 
 ![GIF comparing rendered scene with and without screen space shadows.](sss-before-after.gif)
 
-## Installation
+## Limitations
 
-It is possible nothing additional is needed, NuGet is used to pull the OpenTK project. In case something is needed:
+An inherent limitation of screen space shadows is the lack of accuracy in determining pixel
+occlusion, since there is a limited amount of samples along the ray and positions outside of the
+bounds of the depth buffer cannot be sampled. As mentioned previously, the purpose of the technique
+is to complement shadowmaps, not replace them.
+
+Particularly, in this work, some artifacts are visible where the ground meets the edges of the mech
+model.
+
+![Shadow artifacts near the edges of the model.](sss-artifacts-edge.png)
+
+Decreasing the thickness parameter (maximum depth delta considered by the algorithm) alleviates the
+issue, but starts to introduce artifacts on geometry at a large distance from the camera.
+
+![Shadow artifacts at long distances, with very low thickness.](sss-artifacts-far.png)
+
+To fix this, screen space shadows can be disabled when depth becomes greater than a certain
+threshold. Since the shadows generated are very small scale, there isn't a significant loss in
+overall scene quality.
 
 ## Usage
 

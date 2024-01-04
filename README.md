@@ -11,11 +11,89 @@ general shadowmap technique.
 
 For each light, a ray is marched (in view space) starting from the pixel to be drawn and moving
 along the direction of the light. At each step, the ray's current position is compared to the value
-written on the depth buffer for that position. If the ray's Z coordinate is greater (occluded from
-the camera), that pixel should be in shadow. The render pipeline must include a pass for generating
-the depth buffer required by the algorithm.
+read from the depth buffer for that position. This value must be linearized to be comparable to the
+ray depth. If the ray's Z coordinate is greater (occluded from the camera), that pixel should be in
+shadow. The render pipeline must include [a pass for generating the depth
+buffer](https://github.com/egnawake/screen-space-shadows/blob/1d850ed2ca7da9b4cc060341e948f30038f9b5a6/RPS.cs#L54)
+required by the algorithm.
 
 This implementation was based on [Panos Karabelas' article about screen space shadows][SSSKarabelas].
+
+```glsl
+// Screen space shadows parameters
+// -------------------------------
+
+// Max steps taken by the ray
+const int SSS_MAX_STEPS = 16;
+
+// Max distance travelled by the ray
+const float SSS_MAX_RAY_DISTANCE = 0.02;
+
+// Max depth delta considered for occlusion
+const float SSS_THICKNESS = 0.005;
+
+// Max depth threshold (limited to avoid artifacts at long distances)
+const float SSS_MAX_DEPTH = 5;
+
+
+float ScreenSpaceShadow(Light light, vec3 worldPos)
+{
+    float stepLength = SSS_MAX_RAY_DISTANCE / float(SSS_MAX_STEPS);
+
+    // Get ray starting position in view space
+    vec3 rayPos = (MatrixCamera * vec4(worldPos, 1.0)).xyz;
+
+    // Find ray direction based on light type
+    vec3 toLight;
+    if (light.type == 0)
+    {
+        toLight = -light.direction;
+    }
+    else if (light.type == 1 || light.type == 2)
+    {
+        vec3 lightPos = (MatrixCamera * vec4(light.position, 1.0)).xyz;
+        toLight = normalize(lightPos - rayPos);
+    }
+
+    // Find ray step distance
+    vec3 rayStep = toLight * stepLength;
+
+    float occlusion = 0.0;
+    for (int i = 0; i < SSS_MAX_STEPS; i++)
+    {
+        rayPos += rayStep;
+
+        // Determine current ray UV coords
+        vec4 uv = MatrixProjection * vec4(rayPos, 1.0);
+        uv = uv / uv.w;
+        uv = uv * 0.5 + 0.5;
+
+        // If ray UVs are valid, sample depth texture and compare to ray Z coord
+        if (uv.x >= 0.0 && uv.x <= 1.0 && uv.y >= 0.0 && uv.y <= 1.0)
+        {
+            float depth = texture(EnvTextureDepth, uv.xy).r;
+            depth = GetLinearDepth(depth);
+
+            // Exit early if depth is too large
+            if (depth > SSS_MAX_DEPTH) break;
+
+            float depthDelta = -rayPos.z - depth;
+
+            // If ray Z is greater than depth, mark pixel as occluded
+            if (depthDelta > 0.0 && depthDelta < SSS_THICKNESS)
+            {
+                occlusion = 1.0;
+
+                break;
+            }
+        }
+    }
+
+    // Convert to visibility
+    return 1.0 - occlusion;
+}
+
+```
 
 ## Demonstration
 

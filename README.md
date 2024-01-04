@@ -52,7 +52,20 @@ overall scene quality.
 
 ## Usage
 
-* Clone and use directly. Just need to change the function that is passed to the OpenTKApp.Run method to change the behaviour function.
+Clone and run.
+
+Control the camera using the following keys:
+
+| Key | Action       |
+| --- | ------------ |
+| W   | Move forward |
+| A   | Move left    |
+| S   | Move up      |
+| D   | Move right   |
+| Q   | Move down    |
+| E   | Move up      |
+
+Press `Shift + Esc` to quit the program.
 
 ## References
 

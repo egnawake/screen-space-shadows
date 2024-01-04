@@ -42,10 +42,22 @@ uniform Light   Lights[MAX_LIGHTS];
 uniform sampler2D EnvTextureDepth;
 uniform vec4 EnvZBufferParams;
 
+
+// Screen space shadows parameters
+// -------------------------------
+
+// Max steps taken by the ray
 const int SSS_MAX_STEPS = 16;
+
+// Max distance travelled by the ray
 const float SSS_MAX_RAY_DISTANCE = 0.02;
+
+// Max depth delta considered for occlusion
 const float SSS_THICKNESS = 0.005;
+
+// Max depth threshold (limited to avoid artifacts at long distances)
 const float SSS_MAX_DEPTH = 5;
+
 
 float saturate(float v)
 {
@@ -165,7 +177,7 @@ float ScreenSpaceShadow(Light light, vec3 worldPos)
             float depth = texture(EnvTextureDepth, uv.xy).r;
             depth = GetLinearDepth(depth);
 
-            // Exit early if depth is too large to avoid long distance shadow artifacts
+            // Exit early if depth is too large
             if (depth > SSS_MAX_DEPTH) break;
 
             float depthDelta = -rayPos.z - depth;

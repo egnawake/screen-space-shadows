@@ -128,11 +128,6 @@ namespace SDLBase
             light.cone = new Vector2(0.0f, MathF.PI / 2.0f);
             light.SetShadow(true, 2048);
 
-            (GameObject sphere, Material sphereMaterial) = CreateSphere();
-            sphereMaterial.Set("ColorEmissive", Color4.White);
-            sphere.transform.parent = go.transform;
-            sphere.transform.localPosition = Vector3.Zero;
-
             return go;
         }
 

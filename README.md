@@ -3,14 +3,17 @@
 Implementation of screen space shadows in OpenGL. Final project for the Computer Graphics unit of
 the Bachelor's in Videogames at Universidade Lusófona.
 
-**Screen space shadows** (also known as **contact shadows**) is a technique used to add extra shadow detail,
-particularly around geometry that are very close to each other. It complements the more general
-shadowmap technique.
+**Screen space shadows** (also known as **contact shadows**) is a technique used to add extra shadow
+detail, particularly around geometry that is very close to other geometry. It complements the more
+general shadowmap technique.
 
-For each light, a ray is marched (in view space) from the pixel to be drawn in the light's direction.
-At each step, the ray's current position is compared to the value written on the depth buffer for that
-position. If the ray's Z coordinate is greater (occluded from the camera), that pixel should be in shadow.
-The render pipeline must include a pass for generating the depth buffer required by the algorithm.
+## Algorithm
+
+For each light, a ray is marched (in view space) starting from the pixel to be drawn and moving
+along the direction of the light. At each step, the ray's current position is compared to the value
+written on the depth buffer for that position. If the ray's Z coordinate is greater (occluded from
+the camera), that pixel should be in shadow. The render pipeline must include a pass for generating
+the depth buffer required by the algorithm.
 
 This implementation was based on [Panos Karabelas' article about screen space shadows][SSSKarabelas].
 

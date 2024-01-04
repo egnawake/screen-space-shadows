@@ -145,9 +145,10 @@ float ScreenSpaceShadow(Light light, vec3 worldPos)
 {
     float stepLength = SSS_MAX_RAY_DISTANCE / float(SSS_MAX_STEPS);
 
+    // Get ray starting position in view space
     vec3 rayPos = (MatrixCamera * vec4(worldPos, 1.0)).xyz;
 
-    // Find ray direction
+    // Find ray direction based on light type
     vec3 toLight;
     if (light.type == 0)
     {
@@ -159,6 +160,7 @@ float ScreenSpaceShadow(Light light, vec3 worldPos)
         toLight = normalize(lightPos - rayPos);
     }
 
+    // Find ray step distance
     vec3 rayStep = toLight * stepLength;
 
     float occlusion = 0.0;

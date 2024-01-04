@@ -42,9 +42,10 @@ uniform Light   Lights[MAX_LIGHTS];
 uniform sampler2D EnvTextureDepth;
 uniform vec4 EnvZBufferParams;
 
-const int SSS_MAX_STEPS = 32;
-const float SSS_MAX_RAY_DISTANCE = 0.1;
-const float SSS_THICKNESS = 0.02;
+const int SSS_MAX_STEPS = 16;
+const float SSS_MAX_RAY_DISTANCE = 0.02;
+const float SSS_THICKNESS = 0.005;
+const float SSS_MAX_DEPTH = 5;
 
 float saturate(float v)
 {
@@ -163,6 +164,9 @@ float ScreenSpaceShadow(Light light, vec3 worldPos)
         {
             float depth = texture(EnvTextureDepth, uv.xy).r;
             depth = GetLinearDepth(depth);
+
+            // Exit early if depth is too large to avoid long distance shadow artifacts
+            if (depth > SSS_MAX_DEPTH) break;
 
             float depthDelta = -rayPos.z - depth;
 

@@ -12,8 +12,8 @@ general shadowmap technique.
 For each light, a ray is marched (in view space) starting from the pixel to be drawn and moving
 along the direction of the light. At each step, the ray's current position is compared to the value
 read from the depth buffer for that position. This value must be linearized to be comparable to the
-ray depth. If the ray's Z coordinate is greater (occluded from the camera), that pixel should be in
-shadow. The render pipeline must include [a pass for generating the depth
+ray depth. If the ray's Z coordinate is greater (occluded from the camera), that pixel should not be
+affected by the light. The render pipeline must include [a pass for generating the depth
 buffer](https://github.com/egnawake/screen-space-shadows/blob/1d850ed2ca7da9b4cc060341e948f30038f9b5a6/RPS.cs#L54)
 required by the algorithm.
 

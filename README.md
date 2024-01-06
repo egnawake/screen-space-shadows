@@ -141,7 +141,7 @@ Clone and run.
 | --- | ------------------- |
 | W   | Move camera forward |
 | A   | Move camera left    |
-| S   | Move camera up      |
+| S   | Move camera back    |
 | D   | Move camera right   |
 | Q   | Move camera down    |
 | E   | Move camera up      |

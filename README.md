@@ -135,16 +135,18 @@ overall scene quality.
 
 Clone and run.
 
-Control the camera using the following keys:
+## Controls
 
-| Key | Action       |
-| --- | ------------ |
-| W   | Move forward |
-| A   | Move left    |
-| S   | Move up      |
-| D   | Move right   |
-| Q   | Move down    |
-| E   | Move up      |
+| Key | Action              |
+| --- | ------------------- |
+| W   | Move camera forward |
+| A   | Move camera left    |
+| S   | Move camera up      |
+| D   | Move camera right   |
+| Q   | Move camera down    |
+| E   | Move camera up      |
+
+Hold `Shift` to move the camera faster.
 
 Press `Shift + Esc` to quit the program.
 

@@ -49,50 +49,6 @@ namespace SDLBase
             return go;
         }
 
-        static float Range(this Random rnd, float a, float b)
-        {
-            return rnd.NextSingle() * (b - a) + a;
-        }
-
-        static void CreateRandomTree(Random rnd, float forestSize)
-        {
-            float s = forestSize * 0.2f;
-
-            // Trunk
-            float heightTrunk = rnd.Range(0.5f, 1.5f);
-            float widthTrunk = rnd.Range(0.7f, 1.25f);
-
-            Mesh mesh = GeometryFactory.AddCylinder(widthTrunk, heightTrunk, 8, true);
-
-            Material material = new Material(Shader.Find("Shaders/phong_pp_sss"));
-            material.Set("Color", new Color4(rnd.Range(0.6f, 0.9f), rnd.Range(0.4f, 0.6f), rnd.Range(0.15f, 0.35f), 1.0f));
-            material.Set("ColorEmissive", Color4.Black);
-            material.Set("Specular", Vector2.UnitY);
-
-            GameObject mainObject = new GameObject();
-            mainObject.transform.position = new Vector3(rnd.Range(-s, s), 0, rnd.Range(-s, s));
-            MeshFilter mf = mainObject.AddComponent<MeshFilter>();
-            mf.mesh = mesh;
-            MeshRenderer mr = mainObject.AddComponent<MeshRenderer>();
-            mr.material = material;
-
-            // Leaves
-            mesh = GeometryFactory.AddCylinder(rnd.Range(widthTrunk * 1.5f, widthTrunk * 4.0f), rnd.Range(heightTrunk * 2.0f, heightTrunk * 8.0f), 16, true);
-
-            material = new Material(Shader.Find("Shaders/phong_pp_sss"));
-            material.Set("Color", new Color4(rnd.Range(0.0f, 0.2f), rnd.Range(0.6f, 0.8f), rnd.Range(0.0f, 0.2f), 1.0f));
-            material.Set("ColorEmissive", Color4.Black);
-            material.Set("Specular", Vector2.UnitY);
-
-            GameObject leaveObj = new GameObject();
-            leaveObj.transform.position = mainObject.transform.position + Vector3.UnitY * heightTrunk;
-            leaveObj.transform.SetParent(mainObject.transform);
-            mf = leaveObj.AddComponent<MeshFilter>();
-            mf.mesh = mesh;
-            mr = leaveObj.AddComponent<MeshRenderer>();
-            mr.material = material;
-        }
-
         static void SetupEnvironment()
         {
             var cubeMap = new Texture();
@@ -151,31 +107,7 @@ namespace SDLBase
             light.intensity = intensity;
             light.range = 200;
 
-            (GameObject sphere, Material sphereMaterial) = CreateSphere();
-            sphereMaterial.Set("ColorEmissive", Color4.White);
-            sphere.transform.parent = go.transform;
-            sphere.transform.localPosition = Vector3.Zero;
-
             return go;
-        }
-
-        static (GameObject, Material) CreateSphere()
-        {
-            Mesh mesh = GeometryFactory.AddSphere(0.5f, 32, true);
-
-            Material material = new Material(Shader.Find("Shaders/phong_pp_sss"));
-            material.Set("Color", Color4.White);
-            material.Set("ColorEmissive", Color4.Black);
-            material.Set("Specular", Vector2.UnitY);
-
-            GameObject go = new GameObject();
-            go.transform.position = new Vector3(0, 2, -5);
-            MeshFilter mf = go.AddComponent<MeshFilter>();
-            mf.mesh = mesh;
-            MeshRenderer mr = go.AddComponent<MeshRenderer>();
-            mr.material = material;
-
-            return (go, material);
         }
 
         static void CreateSkysphere(float radius)
@@ -190,33 +122,6 @@ namespace SDLBase
             mf.mesh = mesh;
             MeshRenderer mr = go.AddComponent<MeshRenderer>();
             mr.material = material;
-        }
-
-        static GameObject CreateForest(GameObject light)
-        {
-            float forestSize = 120.0f;
-
-            // Create skysphere
-            CreateSkysphere(forestSize * 4.0f);
-
-            // Create ground
-            var ret = CreateGround(forestSize);
-
-            // Create a sphere in the middle of the forest
-            /*var (reflectSphere, reflectMaterial) = CreateSphere();
-            var (glowSphere, glowMaterial) = CreateSphere();
-            glowSphere.transform.position = light.transform.position;
-            glowMaterial.Set("Color", Color4.Black);
-            glowMaterial.Set("ColorEmissive", Color4.Yellow);*/
-
-            // Create trees
-            Random rnd = new Random(1);
-            for (int i = 0; i < 50; i++)
-            {
-                CreateRandomTree(rnd, forestSize);
-            }
-
-            return ret;
         }
 
         static Mesh ConvertMesh(Assimp.Mesh src)
